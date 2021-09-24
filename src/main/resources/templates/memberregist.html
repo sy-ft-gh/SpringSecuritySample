@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:if="${status == 3}" th:text="MEMBER登録完了"></title>
+    <title th:unless="${status == 3}" th:text="MEMBER登録"></title>
+</head>
+<body>
+    <p>ログイン：<span sec:authentication="name"></span></p>
+   
+    <!-- MEMBER情報入力 -->
+    <div th:if="${status == 0 || status == 1 || status == 2}">
+        <form th:action="@{/Member/Register}" method="POST" th:object="${inputForm}">
+            <label for="userName">ユーザ名:</label>
+            <input id="userName" name="userName" type="text" th:value="*{userName}" />
+            <div th:if="${status == 1}">
+                <!-- エラーがある場合はメッセージが表示される -->
+                <div th:if="${#fields.hasErrors('*{userName}')}">Error
+                    <div th:errors="*{userName}">Error</div>
+                </div>
+            </div>
+            <p th:if="${status == 2">既に登録済みのユーザです。</p>
+            <label for="password">パスワード:</label>
+            <input id="password" name="password" type="password" th:value="*{password}" />
+            <div th:if="${status == 1}">
+                <!-- エラーがある場合はメッセージが表示される -->
+                <div th:if="${#fields.hasErrors('*{password}')}">Error
+                    <div th:errors="*{password}">Error</div>
+                </div>
+            </div>
+            <button type="submit">登録</button>
+        </form>
+    </div>
+    <div th:if="${status == 3}">
+        <p>会員登録が完了しました。</p>
+        <a href="/">メイン画面へ</a>
+    </div>
+</body>
+</html>

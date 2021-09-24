@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>メインページ</title>
+</head>
+<body>
+    メインページです。
+    <p>ようこそ<span sec:authentication="name"></span>さん</p>
+    <div sec:authorize="hasRole('ROLE_ADMIN')">
+        <p>今は<b>ADMIN</b>権限でログインしています。</p>
+        <a href="/Member/RegistForm">会員登録画面へ</a>
+    </div>
+    <div sec:authorize="hasRole('ROLE_USER')">
+        <p>今は<b>USER</b>権限でログインしています。</p> 
+    </div>
+    <form action="#" th:action="@{/logout}" method="post">
+        <input type="submit" value="ログアウト" />
+    </form>
+</body>
+</html>
