@@ -6,12 +6,13 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 // ログイン時に応答するためのユーザログイン情報(UserDetailsを継承する)
-public class LoginUserDetails implements UserDetails {
+public class LoginUserDetails implements UserDetails, CredentialsContainer {
     private static final long serialVersionUID = 1L;
 
     // 権限は一般ユーザ、システム管理者の２種類とする
@@ -112,5 +113,32 @@ public class LoginUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+    /***
+     * ユーザの同一性を検証するためのメソッド
+     * 同一セッションであることの検証に利用される
+     */
+    @Override
+    public boolean equals(Object usr) {
+      if (!(usr instanceof LoginUserDetails)) {
+        return false;
+      }
+      return this.member.getUsername().equals(((LoginUserDetails)usr).getUsername());
+    }
+
+    /***
+     * equals()と併せて同一性の検証に利用される
+     */
+    @Override
+    public int hashCode() {
+      return this.member.getUsername().hashCode();
+    }
+    /**
+     * ログイン後にユーザ情報からパスワード情報をクリアする際のメソッド
+     * ConfigureのeraseCredentials(true)に対応
+     */
+    @Override
+    public void eraseCredentials() {
+      this.member.setPassword(null);
     }
 }
